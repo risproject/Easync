@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import {
@@ -6,10 +6,12 @@ import {
     PolarAngleAxis, PolarRadiusAxis,
     ResponsiveContainer
 } from "recharts";
-import dataKartu from "../hook/datakartu";
+import useGrafik from "../hook/useGrafik";
 import { getStatusColor } from "./levelLogic";
 
 export default function Grafik() {
+    const deviceId = process.env.NEXT_PUBLIC_DEVICE_ID || "device-001";
+    const { dataKartu } = useGrafik(deviceId);
     const [width, setWidth] = useState(768);
 
     useEffect(() => {
@@ -21,6 +23,7 @@ export default function Grafik() {
 
     const renderTick = ({ x, y, index, cx, cy }) => {
         const d = dataKartu[index];
+        if (!d) return null;
         const fontSize = width < 640 ? 10 : 12;
         const r = width < 640 ? 16 : 24;
         const maxChars = 8;
@@ -56,16 +59,20 @@ export default function Grafik() {
         );
     };
 
-    const renderDot = ({ cx, cy, index }) => (
-        <circle
-            key={index}
-            cx={cx}
-            cy={cy}
-            r={5}
-            fill={getStatusColor(dataKartu[index].level)}
-            stroke="#fff"
-            strokeWidth={1} />
-    );
+    const renderDot = ({ cx, cy, index }) => {
+        const d = dataKartu[index];
+        if (!d) return null;
+        return (
+            <circle
+                key={index}
+                cx={cx}
+                cy={cy}
+                r={5}
+                fill={getStatusColor(d.level)}
+                stroke="#fff"
+                strokeWidth={1} />
+        );
+    };
 
     return (
         <div className="bg-white shadow-md rounded-2xl p-4 text-center">

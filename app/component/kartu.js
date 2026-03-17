@@ -1,12 +1,14 @@
-"use client";
+﻿"use client";
 
-import dataKartu from "../hook/datakartu";
+import useLiveDevice from "../hook/useLiveDevice";
 import { getStatusLabel, getStatusColor } from "./levelLogic";
 import { FaTemperatureHalf } from "react-icons/fa6";
 import { FaHandHoldingWater } from "react-icons/fa";
 import { RiSunLine } from "react-icons/ri";
 
 export default function Kartu() {
+    const deviceId = process.env.NEXT_PUBLIC_DEVICE_ID || "device-001";
+    const { dataKartu } = useLiveDevice(deviceId);
     return dataKartu.map((d, i) => <KartuItem key={i} {...d} />);
 }
 
@@ -106,4 +108,3 @@ function KartuItem({ parameter, subjudul, nilai, satuan, level, min, max }) {
         </div>
     );
 }
-

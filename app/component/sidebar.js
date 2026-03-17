@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { RiHome3Fill, RiBarChartFill, RiAlertFill, RiSettings3Fill, RiFlashlightFill } from "react-icons/ri";
+import { RiHome3Fill, RiBarChartFill, RiAlertFill, RiSettings3Fill, } from "react-icons/ri";
 import { DiJqueryLogo } from "react-icons/di";
 import { VscListSelection } from "react-icons/vsc";
 import { PiCircuitryFill } from "react-icons/pi";
@@ -41,7 +41,7 @@ export default function Sidebar() {
                         </button>
 
                         {expanded && (
-                            <div className="flex items-center flex-1 ms-2 min-w-0 gap-1">
+                            <div className="flex items-center flex-1 ml-2 min-w-0 gap-1">
                                 <span className="bg-white p-1 rounded text-black">
                                     <DiJqueryLogo size={18} />
                                 </span>

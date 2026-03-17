@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { usePathname } from "next/navigation";
 import Sidebar from "./sidebar";
@@ -16,8 +16,8 @@ export default function AppShell({ children }) {
     <div className="flex min-h-screen">
       <Sidebar />
       <main className="flex-1 transition-all duration-300 overflow-y-auto">
-        <Header />
         <div className="ms-15 md:ms-0">
+          <Header />
           {children}
         </div>
       </main>
