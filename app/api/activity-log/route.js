@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabaseFetchJson } from "@/lib/supabaseRest";
+import { supabaseFetchJson } from "../../../lib/supabaseRest";
 
 function getDeviceId(request) {
   const { searchParams } = new URL(request.url);

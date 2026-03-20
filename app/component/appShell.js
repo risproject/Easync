@@ -18,7 +18,9 @@ export default function AppShell({ children }) {
       <main className="flex-1 transition-all duration-300 overflow-y-auto">
         <div className="ms-15 md:ms-0">
           <Header />
+          <div className="pt-14">
           {children}
+          </div>
         </div>
       </main>
     </div>

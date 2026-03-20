@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabaseFetchJson } from "@/lib/supabaseRest";
+import { supabaseFetchJson } from "../../../lib/supabaseRest";
 
 function getDeviceId(request) {
   const { searchParams } = new URL(request.url);
@@ -10,16 +10,31 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const deviceId = getDeviceId(request);
   const limit = searchParams.get("limit") || "50";
+  const hours = searchParams.get("hours");
 
   if (!deviceId) return NextResponse.json({ error: "device_id wajib" }, { status: 400 });
 
+  const params = {
+    device_id: `eq.${deviceId}`,
+    select: "*",
+    order: "sensor_ts.desc",
+  };
+
+  if (hours) {
+    const hoursNum = parseFloat(hours);
+    if (!isNaN(hoursNum)) {
+      // Use standard UTC comparison as firmware now sends true UTC
+      const since = new Date(Date.now() - hoursNum * 60 * 60 * 1000).toISOString();
+      params.sensor_ts = `gte.${since}`;
+      // When filtering by hours, we usually want more data points than the default 50
+      params.limit = searchParams.get("limit") || "1000"; 
+    }
+  } else {
+    params.limit = limit;
+  }
+
   const { ok, status, data, error } = await supabaseFetchJson("/sensor_logs", {
-    params: {
-      device_id: `eq.${deviceId}`,
-      select: "*",
-      order: "sensor_ts.desc",
-      limit,
-    },
+    params,
     timeoutMs: 8000,
   });
 

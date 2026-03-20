@@ -31,7 +31,7 @@ export default function Sidebar() {
                 <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={closeSidebar} />
             )}
 
-            <aside className={`bg-teal-600 text-white h-screen top-0 overflow-y-auto md:sticky flex flex-col justify-between transition-all duration-300 z-40 shadow-lg ${isMobile ? 'fixed' : 'relative'} ${expanded ? "w-64" : "w-15"}`}>
+            <aside className={`bg-teal-600 text-white h-screen top-0 overflow-y-auto md:sticky flex flex-col justify-between transition-all duration-300 z-[60] shadow-lg ${isMobile ? 'fixed' : 'relative'} ${expanded ? "w-64" : "w-15"}`}>
 
                 {/* Header */}
                 <div className="px-2">

@@ -1,16 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { IoMdPower } from "react-icons/io";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import useGlobalHook from "../hook/globalHook";
+import { auth } from "../../lib/firebase";
 
 export default function Header({ onPowerToggle }) {
-    const deviceId = process.env.NEXT_PUBLIC_DEVICE_ID || "device-001";
-    const { isActive, pending, toggleLiveEnable } = useGlobalHook(deviceId);
     const { user } = useAuth();
     const router = useRouter();
     const [open, setOpen] = useState(false);
@@ -38,39 +34,13 @@ export default function Header({ onPowerToggle }) {
         router.replace("/login");
     };
 
-    const handleLiveToggle = async () => {
-        if (pending) return;
-        await toggleLiveEnable();
-        if (typeof onPowerToggle === "function") onPowerToggle(!isActive);
-    };
-
     const displayName = user?.displayName || "User";
     const email = user?.email || "-";
-    const liveTitle = isActive ? "Live aktif" : "Live off";
-    const liveButtonClass = isActive
-        ? "bg-emerald-500 hover:bg-emerald-600"
-        : "bg-red-500 hover:bg-red-600";
 
     return (
-        <nav className="bg-white shadow-sm border-b border-slate-200">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-slate-200">
             <div className="w-full px-4 py-3 flex items-center gap-3">
                 <div className="ml-auto flex items-center gap-3">
-                    <button
-                        type="button"
-                        onClick={handleLiveToggle}
-                        disabled={pending}
-                        aria-pressed={isActive}
-                        title={liveTitle}
-                        className={`inline-flex h-9 w-9 items-center justify-center rounded-full text-white shadow-sm transition-colors ${liveButtonClass} ${pending ? "cursor-not-allowed opacity-70" : ""
-                            }`}
-                    >
-                        {pending ? (
-                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                        ) : (
-                            <IoMdPower className="h-4 w-4" />
-                        )}
-                    </button>
-
                     <div className="relative" ref={menuRef}>
                         <button
                             type="button"
@@ -114,4 +84,3 @@ export default function Header({ onPowerToggle }) {
         </nav>
     );
 }
-
