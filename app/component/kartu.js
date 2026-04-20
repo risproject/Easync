@@ -1,11 +1,9 @@
 import { useLiveSensorApi } from "../hook/useApiDevice";
+import { getLevel, getStatusLabel, getStatusColor } from "../utils/sensorUtils";
 import { FaTemperatureHalf, FaDroplet, FaFlask } from "react-icons/fa6";
 import { RiSunLine } from "react-icons/ri";
 
-/**
- * Konfigurasi Level Sensoring Seluruh Kolom Tabel sensor_logs
- * Menentukan ambang batas Minimum dan Maksimum untuk setiap data.
- */
+// konfigurasi tampilan kartu
 const SENSOR_CONFIG = {
   soil_moisture1: { label: "Kelembaban Tanah 1", sub: "Soil Moisture 1", unit: "%", min: 60, max: 80, icon: FaDroplet },
   soil_moisture2: { label: "Kelembaban Tanah 2", sub: "Soil Moisture 2", unit: "%", min: 60, max: 80, icon: FaDroplet },
@@ -16,29 +14,6 @@ const SENSOR_CONFIG = {
   lux: { label: "Intensitas Cahaya", sub: "Light Level", unit: " Lx", min: 1500, max: 4000, icon: RiSunLine },
   tds: { label: "Tingkat TDS", sub: "Nutrient Level", unit: " ppm", min: 500, max: 1200, icon: FaFlask },
 };
-
-/**
- * Logika Penentu Level (1: Rendah, 2: Optimal, 3: Bahaya/Tinggi)
- */
-function getLevel(val, min, max) {
-  if (val < min) return 1;
-  if (val > max) return 3;
-  return 2;
-}
-
-function getStatusLabel(level) {
-  if (level === 1) return "Rendah";
-  if (level === 2) return "Optimal";
-  if (level === 3) return "Bahaya";
-  return "-";
-}
-
-function getStatusColor(level) {
-  if (level === 1) return "#f59e0b"; // Amber (Kuning)
-  if (level === 2) return "#14b8a6"; // Teal (Hijau)
-  if (level === 3) return "#ef4444"; // Red (Merah)
-  return "#94a3b8";
-}
 
 export default function Kartu() {
   const deviceId = process.env.NEXT_PUBLIC_DEVICE_ID || "device-001";
@@ -81,17 +56,14 @@ function KartuItem({ parameter, subjudul, nilai, satuan, level, min, max, icon: 
     3: "bg-red-100"
   }[level];
 
-  // Hitung progress lingkaran (conic-gradient)
-  // Kita asumsikan presentase terhadap nilai maksimal target (max) agar visualnya terisi
+  // Hitung progress lingkaran
   const progressPercent = Math.min(Math.max((nilai / (max * 1.2)) * 100, 0), 100);
   const angle = progressPercent * 3.6;
   const ringBackground = `conic-gradient(${ringColor} 0deg ${angle}deg, white ${angle}deg 360deg)`;
 
   return (
-    <div
-      className={`relative border-2 rounded-2xl shadow-md p-4 flex flex-col items-center select-none overflow-hidden ${cardBgClass} transition-all duration-500`}
-      style={{ borderColor: ringColor }}
-    >
+    <div className={`relative border-2 rounded-2xl shadow-md p-4 flex flex-col items-center select-none overflow-hidden ${cardBgClass} transition-all duration-500`}
+      style={{ borderColor: ringColor }}>
       {/* WATERMARK IKON BESAR */}
       {Icon && (
         <Icon
@@ -109,8 +81,7 @@ function KartuItem({ parameter, subjudul, nilai, satuan, level, min, max, icon: 
 
       <div
         className="relative w-28 h-28 rounded-full flex items-center justify-center z-10 shadow-inner bg-white/50"
-        style={{ background: ringBackground }}
-      >
+        style={{ background: ringBackground }}>
         <div className={`absolute w-24 h-24 rounded-full flex flex-col items-center justify-center ${innerBgClass} shadow-md`}>
           <div className="text-xl font-bold text-slate-800">{nilai}<span className="text-xs ml-0.5">{satuan}</span></div>
           <div className="text-[10px] items-center justify-center font-black uppercase tracking-tighter opacity-70 px-2 py-0.5 rounded-full border border-black/5 bg-white/20">
@@ -121,10 +92,10 @@ function KartuItem({ parameter, subjudul, nilai, satuan, level, min, max, icon: 
 
       <div className="mt-5 flex justify-between w-full px-4 text-[10px] font-bold text-slate-400 z-10">
         <div className="text-center">
-            <div className="text-xs text-slate-700">{min}{satuan}</div>MIN
+          <div className="text-xs text-slate-700">{min}{satuan}</div>MIN
         </div>
         <div className="text-center">
-            <div className="text-xs text-slate-700">{max}{satuan}</div>MAX
+          <div className="text-xs text-slate-700">{max}{satuan}</div>MAX
         </div>
       </div>
     </div>

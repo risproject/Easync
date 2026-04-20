@@ -1,8 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../lib/firebase";
+import { supabase } from "../../lib/supabase";
 
 const AuthContext = createContext();
 
@@ -11,11 +10,20 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsub = onAuthStateChanged(auth, (u) => {
-            setUser(u);
+        // Cek session saat pertama kali load
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user ?? null);
             setLoading(false);
         });
-        return () => unsub();
+
+        // Listen perubahan auth state
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+            (_event, session) => {
+                setUser(session?.user ?? null);
+            }
+        );
+
+        return () => subscription.unsubscribe();
     }, []);
 
     return <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>;
