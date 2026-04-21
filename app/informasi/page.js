@@ -87,7 +87,7 @@ export default function InformasiPage() {
     <div className="p-6 text-slate-800 min-h-screen pb-20">
 
       <div className="mb-8">
-        <h1 className="text-xl font-bold text-slate-700">Log Aktivitas Sistem</h1>
+        <h1 className="text-2xl font-bold text-slate-700">Log Aktivitas Sistem</h1>
         <p className="text-sm text-slate-500 mt-1 tracking-wider font-medium">Halaman Informasi & Riwayat Perangkat</p>
       </div>
 

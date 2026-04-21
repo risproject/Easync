@@ -30,11 +30,11 @@ export default function Sidebar() {
             {isMobile && expanded && (
                 <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={closeSidebar} />
             )}
-            <aside className={`bg-teal-600 text-white h-screen top-0 overflow-y-auto md:sticky flex flex-col justify-between transition-all duration-300 z-[60] shadow-lg ${isMobile ? 'fixed' : 'relative'} ${expanded ? "w-64" : "w-15"}`}>
+            <aside className={`bg-teal-600 text-white h-screen top-0 overflow-y-auto md:sticky flex flex-col justify-between transition-all duration-300 z-60 shadow-lg ${isMobile ? 'fixed' : 'relative'} ${expanded ? "w-64" : "w-15"}`}>
 
                 {/* Header */}
                 <div className="px-2">
-                    <div className={`flex items-center min-h-[60px] my-2`}>
+                    <div style={{ minHeight: '60px' }} className="flex items-center my-2">
                         <button onClick={toggleSidebar} className="rounded-full hover:bg-teal-700/70 p-2 m-1 transition-colors shrink-0 cursor-pointer">
                             <VscListSelection size={20} />
                         </button>

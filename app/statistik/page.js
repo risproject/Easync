@@ -117,10 +117,7 @@ export default function StatistikPage() {
     if (!sensorLogs || sensorLogs.length === 0) return null;
     const stats = {};
     SENSOR_LIST.forEach(cfg => {
-      const values = sensorLogs
-        .map(log => num(log[cfg.key], null))
-        .filter(v => v !== null && v !== -1 && v !== -2);
-      
+      const values = sensorLogs.map(log => num(log[cfg.key], null)).filter(v => v !== null && v !== 0);
       if (values.length > 0) {
         const sum = values.reduce((a, b) => a + b, 0);
         stats[cfg.key] = {
@@ -146,7 +143,7 @@ export default function StatistikPage() {
     <div className="p-4 md:p-6 text-slate-800 min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 my-3">
         <div className="">
-          <button onClick={() => setIsFilterOpen(true)} className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white cursor-pointer text-smld rounded-lg shadow-sm">
+          <button onClick={() => setIsFilterOpen(true)} className="flex items-center gap-2 px-3 py-1.5 bg-linear-to-r from-teal-500 to-teal-600 text-white cursor-pointer text-sm rounded-lg shadow-sm">
             <FaChartBar size={14} />
             Filter Data
           </button>
@@ -186,7 +183,7 @@ export default function StatistikPage() {
 
             <div className="p-4 md:p-6">
               {isFilterOpen && (
-                <div className="fixed inset-0 z-[999] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                   {/* Latar Belakang Gelap (Klik untuk tutup) */}
                   <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsFilterOpen(false)} />
 
@@ -202,7 +199,7 @@ export default function StatistikPage() {
                     </div>
 
                     {/* Modal Body */}
-                    <div className="px-5 flex flex-col max-h-[75vh] overflow-y-auto">
+                    <div style={{ maxHeight: '75vh' }} className="px-5 flex flex-col overflow-y-auto">
                       {/* Filter Waktu */}
                       <div className="py-4 border-b border-slate-100 flex flex-col gap-3">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Filter Waktu</h4>
@@ -254,7 +251,7 @@ export default function StatistikPage() {
               )}
 
               {/* Area Grafik */}
-              <div className="h-[300px] md:h-[400px] w-full mt-6">
+              <div style={{ height: '400px' }} className="w-full mt-6">
                 {logsLoading ? (
                   <div className="flex items-center justify-center h-full text-slate-500">Memuat data...</div>
                 ) : chartData.length === 0 ? (
@@ -300,7 +297,7 @@ export default function StatistikPage() {
 
         {/* RINGKASAN */}
         <div className="xl:col-span-1">
-          <div className="bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl shadow-sm border border-slate-300 overflow-hidden sticky top-20">
+          <div className="bg-linear-to-r from-teal-500 to-teal-600 text-white rounded-xl shadow-sm border border-slate-300 overflow-hidden sticky top-20">
             <div className="h-20 relative px-6 flex flex-col justify-center">
               <FaSeedling className="text-white opacity-20 absolute top-1/2 -translate-y-1/2 right-4" size={60} />
               <h2 className="text-white font-bold text-xl relative z-10">Ringkasan</h2>

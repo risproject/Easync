@@ -32,7 +32,7 @@ export default function SensorPage() {
   return (
     <div className="p-6 text-slate-800 min-h-screen pb-20 bg-slate-50/30">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-700 tracking-tight">Data Sensor Langsung</h1>
+        <h1 className="text-2xl font-bold text-slate-700 tracking-tight">Data Sensor</h1>
         <p className="text-sm text-slate-500 mt-2 font-medium ">
           Last sync: {sensor?.sensor_ts ? formatTimestamp(sensor.sensor_ts) : "-"}
         </p>
