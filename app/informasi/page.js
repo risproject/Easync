@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useSensorLogsApi, useRelayLogsApi } from "../hook/useApiDevice";
-import { FaCircleCheck, FaTriangleExclamation, FaClock, FaCheck, FaPowerOff } from "react-icons/fa6";
+import { FaClock, FaCheck, FaPowerOff } from "react-icons/fa6";
 import { TbWaveSawTool } from "react-icons/tb";
 
 const formatFullTs = (ts) => {
@@ -23,10 +23,9 @@ const formatFullTs = (ts) => {
 };
 
 export default function InformasiPage() {
-  // --- OTENTIKASI & PENGAMBILAN DATA ---
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  const deviceId = process.env.NEXT_PUBLIC_DEVICE_ID || "device-001";
+  const deviceId = process.env.NEXT_PUBLIC_DEVICE_ID;
 
   // Ambil data log sensor dan relay
   const { logs: sensorLogs, loading: sensorLoading } = useSensorLogsApi(deviceId, { limit: 20 });
@@ -36,7 +35,7 @@ export default function InformasiPage() {
   const allLogs = useMemo(() => {
     const combined = [];
 
-    // Tipe 1: Log Sensor (Laporan rutin tiap 5 menit)
+    // Log Sensor
     if (sensorLogs) {
       sensorLogs.forEach(log => {
         combined.push({
@@ -51,7 +50,7 @@ export default function InformasiPage() {
     if (relayLogs) {
       const relayNames = { relay1: "Relay 1", relay2: "Relay 2", relay3: "Relay 3", relay4: "Relay 4" };
       relayLogs.forEach((log, i) => {
-        const prev = relayLogs[i + 1]; // Log yang lebih lama
+        const prev = relayLogs[i + 1];
         Object.keys(relayNames).forEach(key => {
           const currentVal = log[key];
           const prevVal = prev ? prev[key] : null;
@@ -72,11 +71,11 @@ export default function InformasiPage() {
       });
     }
 
-    // Urutkan dari yang terbaru ke terlama
+    // Urutkan dari yang terbaru
     return combined.sort((a, b) => new Date(b.ts) - new Date(a.ts)).slice(0, 20);
   }, [sensorLogs, relayLogs]);
 
-  // Pental (redirect) ke login jika user tidak terdeteksi
+  // redirect ke login
   useEffect(() => {
     if (!authLoading && !user) router.replace("/login");
   }, [user, authLoading, router]);
@@ -87,15 +86,11 @@ export default function InformasiPage() {
   return (
     <div className="p-6 text-slate-800 min-h-screen pb-20">
 
-      {/* --- 2. TAMPILAN HEADER HALAMAN --- */}
       <div className="mb-8">
         <h1 className="text-xl font-bold text-slate-700">Log Aktivitas Sistem</h1>
         <p className="text-sm text-slate-500 mt-1 tracking-wider font-medium">Halaman Informasi & Riwayat Perangkat</p>
       </div>
 
-      {/* --- 3. TAMPILAN DAFTAR LOG (HISTORY) --- */}
-
-      {/* Indikator jumlah log yang ditemukan */}
       {!logsLoading && allLogs.length > 0 && (
         <div className="mb-4 flex items-center justify-between">
           <p className="text-xs text-slate-400 font-medium uppercase tracking-widest">
@@ -119,12 +114,10 @@ export default function InformasiPage() {
               key={idx}
               className="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-start gap-5"
             >
-              {/* Ikon Status Berdasarkan Tipe Log */}
               <div className={`mt-1 p-2.5 rounded-2xl shrink-0 ${log.colorClass}`}>
                 {log.icon}
               </div>
 
-              {/* Detail Konten Log */}
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-2">
                   <p className="font-semibold text-slate-700 text-md">

@@ -2,17 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-    Radar, RadarChart, PolarGrid,
-    PolarAngleAxis, PolarRadiusAxis,
-    ResponsiveContainer
+    Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer
 } from "recharts";
 import { useAutomationApi, useLiveSensorApi } from "../hook/useApiDevice";
 import {
-    ambangBatas,
-    getLevel,
-    getStatusColor,
-    safeNumber,
-    formatTimestamp
+    SENSOR_CONFIG, getLevel, getStatusColor, formatTimestamp
 } from "../utils/sensorUtils";
 
 const parameterRadar = [
@@ -20,36 +14,46 @@ const parameterRadar = [
         id: 1,
         parameter: "Cahaya",
         subjudul: "Digital",
-        getValue: (s) => safeNumber(s.lux),
-        ...ambangBatas.cahaya,
+        getValue: (s) => s.lux,
+        min: SENSOR_CONFIG.lux.min,
+        max: SENSOR_CONFIG.lux.max,
+        satuan: SENSOR_CONFIG.lux.unit,
     },
     {
         id: 2,
         parameter: "Suhu Udara",
         subjudul: "Digital",
-        getValue: (s) => safeNumber(s.temp2),
-        ...ambangBatas.suhuUdara,
+        getValue: (s) => s.temp2,
+        min: SENSOR_CONFIG.temp2.min,
+        max: SENSOR_CONFIG.temp2.max,
+        satuan: SENSOR_CONFIG.temp2.unit,
     },
     {
         id: 3,
         parameter: "Kelembapan Udara",
         subjudul: "DHT22",
-        getValue: (s) => safeNumber(s.air_hum),
-        ...ambangBatas.kelembabanUdara,
+        getValue: (s) => s.air_hum,
+        min: SENSOR_CONFIG.air_hum.min,
+        max: SENSOR_CONFIG.air_hum.max,
+        satuan: SENSOR_CONFIG.air_hum.unit,
     },
     {
         id: 4,
         parameter: "Kelembaban Tanah",
         subjudul: "Soil Capacitive",
-        getValue: (s) => safeNumber(s.soil_moisture1),
-        ...ambangBatas.kelembabanTanah,
+        getValue: (s) => s.soil_moisture1,
+        min: SENSOR_CONFIG.soil_moisture1.min,
+        max: SENSOR_CONFIG.soil_moisture1.max,
+        satuan: SENSOR_CONFIG.soil_moisture1.unit,
     },
     {
         id: 5,
         parameter: "Suhu Tanah",
         subjudul: "Digital",
-        getValue: (s) => safeNumber(s.temp1),
-        ...ambangBatas.suhuTanah,
+        getValue: (s) => s.temp1,
+        min: SENSOR_CONFIG.temp1.min,
+        max: SENSOR_CONFIG.temp1.max,
+        satuan: SENSOR_CONFIG.temp1.unit,
     }
 ];
 function buildRadarData(sensor) {
@@ -183,7 +187,7 @@ export default function Grafik() {
     );
 
     return (
-        <div className="bg-white shadow-md rounded-2xl p-4 text-center border border-black/10">
+        <div className="bg-white shadow-md rounded-xl p-4 text-center border border-black/10">
             <h2 className="text-md font-semibold mb-2">Live Data</h2>
             <div className="text-xs text-slate-500 mb-3">
                 Last sync:{" "}

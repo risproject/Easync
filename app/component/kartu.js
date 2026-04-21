@@ -1,19 +1,6 @@
 import { useLiveSensorApi } from "../hook/useApiDevice";
-import { getLevel, getStatusLabel, getStatusColor } from "../utils/sensorUtils";
-import { FaTemperatureHalf, FaDroplet, FaFlask } from "react-icons/fa6";
-import { RiSunLine } from "react-icons/ri";
+import { getLevel, getStatusLabel, getStatusColor, SENSOR_CONFIG } from "../utils/sensorUtils";
 
-// konfigurasi tampilan kartu
-const SENSOR_CONFIG = {
-  soil_moisture1: { label: "Kelembaban Tanah 1", sub: "Soil Moisture 1", unit: "%", min: 60, max: 80, icon: FaDroplet },
-  soil_moisture2: { label: "Kelembaban Tanah 2", sub: "Soil Moisture 2", unit: "%", min: 60, max: 80, icon: FaDroplet },
-  air_temp: { label: "Suhu Udara", sub: "Air Temp", unit: "°C", min: 18, max: 35, icon: FaTemperatureHalf },
-  air_hum: { label: "Kelembaban Udara", sub: "Air Humidity", unit: "%", min: 60, max: 80, icon: FaDroplet },
-  temp1: { label: "Suhu Air 1", sub: "Water Temp 1", unit: "°C", min: 20, max: 30, icon: FaTemperatureHalf },
-  temp2: { label: "Suhu Air 2", sub: "Water Temp 2", unit: "°C", min: 20, max: 30, icon: FaTemperatureHalf },
-  lux: { label: "Intensitas Cahaya", sub: "Light Level", unit: " Lx", min: 1500, max: 4000, icon: RiSunLine },
-  tds: { label: "Tingkat TDS", sub: "Nutrient Level", unit: " ppm", min: 500, max: 1200, icon: FaFlask },
-};
 
 export default function Kartu() {
   const deviceId = process.env.NEXT_PUBLIC_DEVICE_ID || "device-001";
@@ -45,12 +32,14 @@ function KartuItem({ parameter, subjudul, nilai, satuan, level, min, max, icon: 
 
   // Warna background kartu mengikuti level
   const cardBgClass = {
+    0: "bg-slate-50",
     1: "bg-amber-50",
     2: "bg-teal-50",
     3: "bg-red-50"
   }[level];
 
   const innerBgClass = {
+    0: "bg-slate-100",
     1: "bg-amber-100",
     2: "bg-teal-100",
     3: "bg-red-100"
@@ -64,38 +53,38 @@ function KartuItem({ parameter, subjudul, nilai, satuan, level, min, max, icon: 
   return (
     <div className={`relative border-2 rounded-2xl shadow-md p-4 flex flex-col items-center select-none overflow-hidden ${cardBgClass} transition-all duration-500`}
       style={{ borderColor: ringColor }}>
-      {/* WATERMARK IKON BESAR */}
       {Icon && (
-        <Icon
-          className="absolute opacity-10 pointer-events-none"
-          size={120}
-          style={{ bottom: -20, left: -20 }}
-          color={ringColor}
-        />
+        <Icon className="absolute opacity-10 pointer-events-none" size={120} style={{ bottom: -20, left: -20 }} color={ringColor} />
       )}
 
       <div className="text-center mb-3 z-10">
         <div className="font-bold text-slate-800">{parameter}</div>
-        <div className="text-[10px] uppercase font-bold opacity-40 tracking-widest">{subjudul}</div>
+        <div className="text-[10px] uppercase opacity-70 tracking-widest my-2">{subjudul}</div>
       </div>
 
       <div
         className="relative w-28 h-28 rounded-full flex items-center justify-center z-10 shadow-inner bg-white/50"
         style={{ background: ringBackground }}>
         <div className={`absolute w-24 h-24 rounded-full flex flex-col items-center justify-center ${innerBgClass} shadow-md`}>
-          <div className="text-xl font-bold text-slate-800">{nilai}<span className="text-xs ml-0.5">{satuan}</span></div>
-          <div className="text-[10px] items-center justify-center font-black uppercase tracking-tighter opacity-70 px-2 py-0.5 rounded-full border border-black/5 bg-white/20">
+          {level === 0 ? (
+            <div className="text-base font-black text-slate-600 tracking-tighter">ERROR</div>
+          ) : (
+            <div className={`${satuan === " Lux" ? "text-base" : "text-xl"} font-bold text-slate-800`}>
+              {nilai}<span className="text-xs ml-0.5">{satuan}</span>
+            </div>
+          )}
+          <div className="text-[10px] items-center justify-center font-black uppercase tracking-tighter opacity-70 px-2 py-1">
             {statusLabel}
           </div>
         </div>
       </div>
 
-      <div className="mt-5 flex justify-between w-full px-4 text-[10px] font-bold text-slate-400 z-10">
+      <div className="mt-5 flex justify-between w-full px-4 text-[12px] font-bold z-10 text-slate-700/85">
         <div className="text-center">
-          <div className="text-xs text-slate-700">{min}{satuan}</div>MIN
+          <div className="text-xs">{min}{satuan}</div>MIN
         </div>
         <div className="text-center">
-          <div className="text-xs text-slate-700">{max}{satuan}</div>MAX
+          <div className="text-xs">{max}{satuan}</div>MAX
         </div>
       </div>
     </div>

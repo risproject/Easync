@@ -224,13 +224,17 @@ export function useRelayLogsApi(deviceId = DEFAULT_DEVICE_ID, options = {}) {
 export function useSensorLogsApi(deviceId = DEFAULT_DEVICE_ID, options = {}) {
   const limit = options.limit ?? 50;
   const hours = options.hours ?? null;
+  const startDate = options.startDate ?? null;
+  const endDate = options.endDate ?? null;
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchLogs = useCallback(async () => {
     if (!deviceId) return;
     try {
-      const url = hours 
+      const url = (startDate && endDate) 
+        ? `/api/sensor-logs?device_id=${deviceId}&start_date=${startDate}&end_date=${endDate}`
+        : hours 
         ? `/api/sensor-logs?device_id=${deviceId}&hours=${hours}`
         : `/api/sensor-logs?device_id=${deviceId}&limit=${limit}`;
       const data = await fetchJson(url);
@@ -240,7 +244,7 @@ export function useSensorLogsApi(deviceId = DEFAULT_DEVICE_ID, options = {}) {
     } finally {
       setLoading(false);
     }
-  }, [deviceId, limit, hours]);
+  }, [deviceId, limit, hours, startDate, endDate]);
 
   useEffect(() => {
     if (!deviceId) return;

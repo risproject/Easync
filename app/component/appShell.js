@@ -19,7 +19,7 @@ export default function AppShell({ children }) {
         <div className="ms-15 md:ms-0">
           <Header />
           <div className="pt-14">
-          {children}
+            {children}
           </div>
         </div>
       </main>

@@ -1,25 +1,111 @@
-// Ambang batas min/max
-export const ambangBatas = {
-  cahaya: { min: 10000, max: 20000, satuan: "Lx" },
-  suhuUdara: { min: 16, max: 32, satuan: "°C" },
-  kelembabanUdara: { min: 60, max: 80, satuan: "%" },
-  kelembabanTanah: { min: 60, max: 80, satuan: "%" },
-  suhuTanah: { min: 15, max: 30, satuan: "°C" },
+import { FaTemperatureHalf, FaDroplet, FaFlask, FaCircleCheck } from "react-icons/fa6";
+import { RiSunLine } from "react-icons/ri";
+
+// Konfigurasi Central untuk seluruh sensor
+export const SENSOR_CONFIG = {
+  soil_moisture1: {
+    label: "Kelembaban Tanah 1",
+    sub: "Soil Moisture Sensor",
+    unit: "%",
+    min: 52,
+    max: 75,
+    maxLimit: 100,
+    color: "#0d9488",
+    icon: FaDroplet
+  },
+  soil_moisture2: {
+    label: "Kelembaban Tanah 2",
+    sub: "Soil Moisture Sensor",
+    unit: "%",
+    min: 52,
+    max: 75,
+    maxLimit: 100,
+    color: "#14b8a6",
+    icon: FaDroplet
+  },
+  air_temp: {
+    label: "Engine Temp",
+    sub: "AHT10",
+    unit: "°C",
+    min: 15,
+    max: 30,
+    maxLimit: 50,
+    color: "#3b82f6",
+    icon: FaTemperatureHalf
+  },
+  air_hum: {
+    label: "Kelembaban Udara",
+    sub: "AHT10",
+    unit: "%",
+    min: 50,
+    max: 80,
+    maxLimit: 100,
+    color: "#3b82f6",
+    icon: FaDroplet
+  },
+  temp1: {
+    label: "Suhu Tanah",
+    sub: "DS18B20",
+    unit: "°C",
+    min: 15,
+    max: 30,
+    maxLimit: 50,
+    color: "#8b5cf6",
+    icon: FaTemperatureHalf
+  },
+  temp2: {
+    label: "Suhu Udara",
+    sub: "DS18B20",
+    unit: "°C",
+    min: 15,
+    max: 30,
+    maxLimit: 50,
+    color: "#a855f7",
+    icon: FaTemperatureHalf
+  },
+  lux: {
+    label: "Intensitas Cahaya",
+    sub: "BH1750",
+    unit: " Lux",
+    min: 10000,
+    max: 30000,
+    maxLimit: 50000,
+    color: "#f59e0b",
+    icon: RiSunLine
+  },
+  tds: {
+    label: "Tingkat TDS",
+    sub: "Gravity V1",
+    unit: " ppm",
+    min: 100,
+    max: 1000,
+    maxLimit: 1000,
+    color: "#ef4444",
+    icon: FaFlask
+  },
 };
 
+export const SENSOR_LIST = Object.entries(SENSOR_CONFIG).map(([key, value]) => ({
+  key,
+  ...value,
+}));
+
+
 export function getLevel(value, min, max) {
+  if (value === -1 || value === -2) return 0;
   if (value < min) return 1;
   if (value > max) return 3;
   return 2;
 }
 
 export function getStatusLabel(level) {
-  const labels = { 1: "Rendah", 2: "Optimal", 3: "Tinggi" };
+  const labels = { 0: "Offline", 1: "Rendah", 2: "Optimal", 3: "Tinggi" };
   return labels[level] || "-";
 }
 
 export function getStatusColor(level) {
   const colors = {
+    0: "#94a3b8",
     1: "#FD9A00",
     2: "#00BBA8",
     3: "#FB2C36",
@@ -27,9 +113,6 @@ export function getStatusColor(level) {
   return colors[level] || "#999";
 }
 
-export function safeNumber(value, fallback = 0) {
-  return Number.isFinite(value) ? value : fallback;
-}
 
 export function formatTimestamp(ts) {
   if (!ts) return "-";
@@ -43,3 +126,4 @@ export function formatTimestamp(ts) {
   const s = String(date.getUTCSeconds()).padStart(2, "0");
   return `${d}/${m}/${y} - ${h}:${min}:${s}`;
 }
+

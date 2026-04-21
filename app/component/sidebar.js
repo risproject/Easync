@@ -30,7 +30,6 @@ export default function Sidebar() {
             {isMobile && expanded && (
                 <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={closeSidebar} />
             )}
-
             <aside className={`bg-teal-600 text-white h-screen top-0 overflow-y-auto md:sticky flex flex-col justify-between transition-all duration-300 z-[60] shadow-lg ${isMobile ? 'fixed' : 'relative'} ${expanded ? "w-64" : "w-15"}`}>
 
                 {/* Header */}
@@ -39,7 +38,6 @@ export default function Sidebar() {
                         <button onClick={toggleSidebar} className="rounded-full hover:bg-teal-700/70 p-2 m-1 transition-colors shrink-0 cursor-pointer">
                             <VscListSelection size={20} />
                         </button>
-
                         {expanded && (
                             <div className="flex items-center flex-1 ml-2 min-w-0 gap-1">
                                 <span className="bg-white p-1 rounded text-black">
@@ -59,7 +57,6 @@ export default function Sidebar() {
                     <MenuItem icon={<PiCircuitryFill size={20} />} label="Sensor" href="/sensor" expanded={expanded} onClick={closeSidebar} />
                     <MenuItem icon={<RiSettings3Fill size={20} />} label="Setelan" href="/setelan" expanded={expanded} onClick={closeSidebar} />
                 </nav>
-
             </aside>
         </>
     );
