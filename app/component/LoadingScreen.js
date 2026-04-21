@@ -30,7 +30,7 @@ export default function LoadingScreen() {
             className="absolute bottom-0 left-0 w-full bg-white/30 transition-all duration-300 ease-out"
             style={{ height: `${progress}%` }} />
 
-          <div className="relative z-10 text-lg font-light text-white tracking-tight tabular-nums">
+          <div className="relative z-10 font-light text-white tracking-tight tabular-nums">
             {Math.round(progress)}%
           </div>
         </div>
