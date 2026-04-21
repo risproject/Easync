@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "next/navigation";
-import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { FaEye, FaEyeSlash, FaSeedling } from "react-icons/fa6";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -51,9 +51,9 @@ export default function LoginPage() {
         <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
             <div className="w-full max-w-sm">
 
-                <div className="mb-6 text-center">
-                    <img src="/assets/f-s.png" alt="Logo" className="mx-auto mb-2 w-8 h-8 object-contain" />
-                    <h1 className="text-lg font-semibold text-slate-700">Easy Sync</h1>
+                <div className="mb-6 text-center text-teal-600 flex flex-col items-center">
+                    <FaSeedling size={32} className="mb-2" />
+                    <h1 className="text-lg font-semibold text-slate-700">Easync</h1>
                     <p className="text-sm text-slate-500 mt-1">Sign-in untuk masuk ke Easync</p>
                 </div>
 

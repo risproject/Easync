@@ -9,7 +9,7 @@ const fontPoppins = Poppins({
 });
 
 export const metadata = {
-  title: "FR-6000",
+  title: "Easync Dashboard",
   description: "Monitoring and Control",
   icons: {
     icon: "/assets/favicon.png",

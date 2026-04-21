@@ -40,10 +40,7 @@ export default function Sidebar() {
                         </button>
                         {expanded && (
                             <div className="flex items-center flex-1 ml-2 min-w-0 gap-1">
-                                <span className="bg-white p-1 rounded text-black">
-                                    <DiJqueryLogo size={18} />
-                                </span>
-                                <span className="font-semibold truncate">FR-6000</span>
+                                <span className="font-semibold truncate">Easync</span>
                             </div>
                         )}
                     </div>
