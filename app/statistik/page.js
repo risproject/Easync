@@ -11,7 +11,8 @@ import {
 import {
   FaChartBar, FaSeedling, FaXmark
 } from "react-icons/fa6";
-import { SENSOR_CONFIG, SENSOR_LIST } from "../utils/sensorUtils";
+import { useSensorConfig } from "../utils/sensorUtils";
+import LoadingScreen from "../component/LoadingScreen";
 
 const num = (v, fallback = 0) => (Number.isFinite(v) ? v : fallback);
 
@@ -51,6 +52,13 @@ export default function StatistikPage() {
 
   // api hook
   const { logs: sensorLogs, loading: logsLoading } = useSensorLogsApi(deviceId, { hours: selectedHours });
+  const sensorConfig = useSensorConfig();
+
+  // Derivasi sensorList dari sensorConfig dinamis
+  const sensorList = useMemo(() => {
+    if (!sensorConfig) return [];
+    return Object.entries(sensorConfig).map(([key, value]) => ({ key, ...value }));
+  }, [sensorConfig]);
 
   // rute login
   useEffect(() => {
@@ -114,9 +122,9 @@ export default function StatistikPage() {
   }, [sensorLogs, selectedHours]);
 
   const sensorStats = useMemo(() => {
-    if (!sensorLogs || sensorLogs.length === 0) return null;
+    if (!sensorLogs || sensorLogs.length === 0 || !sensorList.length) return null;
     const stats = {};
-    SENSOR_LIST.forEach(cfg => {
+    sensorList.forEach(cfg => {
       const values = sensorLogs.map(log => num(log[cfg.key], null)).filter(v => v !== null && v !== 0);
       if (values.length > 0) {
         const sum = values.reduce((a, b) => a + b, 0);
@@ -135,7 +143,7 @@ export default function StatistikPage() {
 
 
   // loading screen
-  if (authLoading) return <div className="p-10 font-medium text-slate-500 text-center">Memeriksa akun...</div>;
+  if (authLoading || (logsLoading && !sensorLogs)) return <LoadingScreen />;
   if (!user) return null;
 
   // bagian utama
@@ -168,7 +176,7 @@ export default function StatistikPage() {
               {selectedKeys.length > 0 && (
                 <div className="flex flex-wrap items-center gap-4">
                   {selectedKeys.map(key => {
-                    const s = SENSOR_CONFIG[key];
+                    const s = sensorConfig?.[key];
                     if (!s) return null;
                     return (
                       <div key={key} className="flex items-center gap-1.5 text-xs font-semibold text-slate-600">
@@ -183,7 +191,7 @@ export default function StatistikPage() {
 
             <div className="p-4 md:p-6">
               {isFilterOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-70 flex items-center justify-center p-4">
                   {/* Latar Belakang Gelap (Klik untuk tutup) */}
                   <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsFilterOpen(false)} />
 
@@ -237,7 +245,7 @@ export default function StatistikPage() {
                       {/* Filter Sensor */}
                       <div className="py-4 flex flex-col gap-4 mb-2">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Pilih Sensor</h4>
-                        {SENSOR_LIST.map(s => (
+                        {sensorList.map(s => (
                           <label key={s.key} className="flex items-center gap-3 cursor-pointer text-sm font-medium text-slate-700 hover:text-slate-900">
                             <input type="checkbox" className="w-4 h-4 rounded border-slate-300 accent-teal-600" checked={selectedKeys.includes(s.key)} onChange={() => toggleKey(s.key)} />
                             {s.label}
@@ -261,7 +269,7 @@ export default function StatistikPage() {
                     <AreaChart data={chartData} margin={{ top: 10, right: 5, left: -20, bottom: 0 }}>
                       <defs>
                         {selectedKeys.map(key => {
-                          const s = SENSOR_CONFIG[key];
+                          const s = sensorConfig?.[key];
                           return (
                             <linearGradient key={`grad-${key}`} id={`color-${key}`} x1="0" y1="0" x2="0" y2="1">
                               <stop offset="5%" stopColor={s?.color} stopOpacity={0.3} />
@@ -282,7 +290,7 @@ export default function StatistikPage() {
                         }}
                       />
                       {selectedKeys.map(key => {
-                        const s = SENSOR_CONFIG[key];
+                        const s = sensorConfig?.[key];
                         return (
                           <Area key={key} yAxisId={key === 'lux' ? "right" : "left"} type="monotone" dataKey={key} name={s?.label} stroke={s?.color} strokeWidth={2} fillOpacity={1} fill={`url(#color-${key})`} />
                         );
@@ -309,18 +317,18 @@ export default function StatistikPage() {
             </div>
 
             <div className="space-y-3 px-3 py-4">
-              {(!sensorStats || Object.keys(sensorStats).length === 0) ? (
+              {(!sensorStats || Object.keys(sensorStats).length === 0 || !sensorConfig) ? (
                 <div className="text-slate-500 text-md text-center py-4 italic">Belum ada data statistik</div>
               ) : (
                 selectedKeys.map(key => {
-                  const s = SENSOR_CONFIG[key];
+                  const s = sensorConfig[key];
                   if (!s || !sensorStats[key]) return null;
                   const stats = sensorStats[key];
                   const maxLimit = s.maxLimit || 100;
                   const Icon = s.icon;
 
                   return (
-                    <div key={key} className="bg-white/70 rounded-xl p-4 border border-slate-300 hover:border-emerald-200 transition-colors group">
+                    <div key={key} className="bg-white/75 rounded-xl p-4 border border-slate-300">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-3">
                           <div className="p-2 bg-white/70 rounded-xl shadow-sm border border-slate-100" style={{ color: s.color }}>

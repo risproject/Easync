@@ -1,3 +1,7 @@
+"use client";
+
+import { useMemo } from "react";
+import { useAutomationApi } from "../hook/useApiDevice";
 import { FaTemperatureHalf, FaDroplet, FaFlask, FaCircleCheck } from "react-icons/fa6";
 import { RiSunLine } from "react-icons/ri";
 
@@ -74,7 +78,7 @@ export const SENSOR_CONFIG = {
     icon: RiSunLine
   },
   tds: {
-    label: "Tingkat TDS",
+    label: "Padatan Terlarut (TDS)",
     sub: "Gravity V1",
     unit: " ppm",
     min: 100,
@@ -127,3 +131,28 @@ export function formatTimestamp(ts) {
   return `${d}/${m}/${y} - ${h}:${min}:${s}`;
 }
 
+export function mergeSensorConfig(baseConfig, automation) {
+  if (!automation) return baseConfig;
+  return {
+    ...baseConfig,
+    soil_moisture1: {
+      ...baseConfig.soil_moisture1,
+      min: Number(automation.soil_min) || baseConfig.soil_moisture1.min,
+      max: Number(automation.soil_max) || baseConfig.soil_moisture1.max,
+    },
+    soil_moisture2: {
+      ...baseConfig.soil_moisture2,
+      min: Number(automation.soil_min) || baseConfig.soil_moisture2.min,
+      max: Number(automation.soil_max) || baseConfig.soil_moisture2.max,
+    },
+  };
+}
+
+export function useSensorConfig() {
+  const deviceId = process.env.NEXT_PUBLIC_DEVICE_ID || "device-001";
+  const { automation } = useAutomationApi(deviceId, { pollMs: 0 });
+
+  return useMemo(() => {
+    return mergeSensorConfig(SENSOR_CONFIG, automation);
+  }, [automation]);
+}

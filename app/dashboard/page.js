@@ -1,11 +1,11 @@
-﻿"use client";
+"use client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
 import Grafik from "../component/grafik";
 import ControlPanel from "../component/controlPanel";
-// import Kartu from "../component/kartu";
+import LoadingScreen from "../component/LoadingScreen";
 
 export default function DashboardPage() {
     const { user, loading } = useAuth();
@@ -15,7 +15,7 @@ export default function DashboardPage() {
         if (!loading && !user) router.replace("/login");
     }, [user, loading, router]);
 
-    if (loading) return <p className="p-6">Loading...</p>;
+    if (loading) return <LoadingScreen />;
     if (!user) return null;
 
     return (

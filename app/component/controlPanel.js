@@ -195,7 +195,6 @@ export default function ControlPanel() {
                             <select value={mode} onChange={handleModeChange} disabled={!!busyKey || anyRelayLoading} className={`w-full appearance-none rounded-md px-4 py-2 text-sm font-medium shadow-inner transition-colors duration-300 ${(busyKey || anyRelayLoading) ? "bg-slate-100 text-slate-400 cursor-not-allowed opacity-50" : "bg-slate-100 text-slate-700"}`} >
                                 <option value="manual">Manual</option>
                                 <option value="auto">Automatic</option>
-                                <option value="smart">Smart Auto</option>
                             </select>
                             <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">▾</span>
                         </div>

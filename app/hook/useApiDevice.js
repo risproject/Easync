@@ -254,27 +254,3 @@ export function useSensorLogsApi(deviceId = DEFAULT_DEVICE_ID, options = {}) {
   return { logs, loading, refresh: fetchLogs };
 }
 
-export function useActivityLogApi(deviceId = DEFAULT_DEVICE_ID, options = {}) {
-  const limit = options.limit ?? 50;
-  const [logs, setLogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchLogs = useCallback(async () => {
-    if (!deviceId) return;
-    try {
-      const data = await fetchJson(`/api/activity-log?device_id=${deviceId}&limit=${limit}`);
-      setLogs(Array.isArray(data.data) ? data.data : []);
-    } catch (err) {
-      console.error("Fetch activity-log gagal:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [deviceId, limit]);
-
-  useEffect(() => {
-    if (!deviceId) return;
-    fetchLogs();
-  }, [deviceId, fetchLogs]);
-
-  return { logs, loading, refresh: fetchLogs };
-}

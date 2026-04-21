@@ -1,15 +1,16 @@
 import { useLiveSensorApi } from "../hook/useApiDevice";
-import { getLevel, getStatusLabel, getStatusColor, SENSOR_CONFIG } from "../utils/sensorUtils";
+import { getLevel, getStatusLabel, getStatusColor, useSensorConfig } from "../utils/sensorUtils";
 
 
 export default function Kartu() {
   const deviceId = process.env.NEXT_PUBLIC_DEVICE_ID || "device-001";
   const { sensor } = useLiveSensorApi(deviceId);
+  const sensorConfig = useSensorConfig();
 
-  if (!sensor) return null;
+  if (!sensor || !sensorConfig) return null;
 
   // Siapkan data seluruh sensor (8 parameter)
-  const dataList = Object.entries(SENSOR_CONFIG).map(([key, config]) => {
+  const dataList = Object.entries(sensorConfig).map(([key, config]) => {
     const nilai = sensor[key] || 0;
     return {
       parameter: config.label,

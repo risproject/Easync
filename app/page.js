@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "./context/AuthContext";
+import LoadingScreen from "./component/LoadingScreen";
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -15,5 +16,5 @@ export default function Home() {
     }
   }, [user, loading]);
 
-  return <p>Checking authentication...</p>;
+  return <LoadingScreen />;
 }

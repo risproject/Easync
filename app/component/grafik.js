@@ -6,59 +6,13 @@ import {
 } from "recharts";
 import { useAutomationApi, useLiveSensorApi } from "../hook/useApiDevice";
 import {
-    SENSOR_CONFIG, getLevel, getStatusColor, formatTimestamp
+    useSensorConfig, getLevel, getStatusColor, formatTimestamp
 } from "../utils/sensorUtils";
 
-const parameterRadar = [
-    {
-        id: 1,
-        parameter: "Cahaya",
-        subjudul: "Digital",
-        getValue: (s) => s.lux,
-        min: SENSOR_CONFIG.lux.min,
-        max: SENSOR_CONFIG.lux.max,
-        satuan: SENSOR_CONFIG.lux.unit,
-    },
-    {
-        id: 2,
-        parameter: "Suhu Udara",
-        subjudul: "Digital",
-        getValue: (s) => s.temp2,
-        min: SENSOR_CONFIG.temp2.min,
-        max: SENSOR_CONFIG.temp2.max,
-        satuan: SENSOR_CONFIG.temp2.unit,
-    },
-    {
-        id: 3,
-        parameter: "Kelembapan Udara",
-        subjudul: "DHT22",
-        getValue: (s) => s.air_hum,
-        min: SENSOR_CONFIG.air_hum.min,
-        max: SENSOR_CONFIG.air_hum.max,
-        satuan: SENSOR_CONFIG.air_hum.unit,
-    },
-    {
-        id: 4,
-        parameter: "Kelembaban Tanah",
-        subjudul: "Soil Capacitive",
-        getValue: (s) => s.soil_moisture1,
-        min: SENSOR_CONFIG.soil_moisture1.min,
-        max: SENSOR_CONFIG.soil_moisture1.max,
-        satuan: SENSOR_CONFIG.soil_moisture1.unit,
-    },
-    {
-        id: 5,
-        parameter: "Suhu Tanah",
-        subjudul: "Digital",
-        getValue: (s) => s.temp1,
-        min: SENSOR_CONFIG.temp1.min,
-        max: SENSOR_CONFIG.temp1.max,
-        satuan: SENSOR_CONFIG.temp1.unit,
-    }
-];
-function buildRadarData(sensor) {
-    if (!sensor) return [];
-    return parameterRadar.map((p) => {
+
+function buildRadarData(sensor, parameters) {
+    if (!sensor || !parameters) return [];
+    return parameters.map((p) => {
         const nilai = p.getValue(sensor);
         return {
             ...p,
@@ -161,11 +115,65 @@ export default function Grafik() {
     const { sensor } = useLiveSensorApi(deviceId, { pollMs: 2000, liveEnabled });
 
     const [lastSensor, setLastSensor] = useState(null);
+    const sensorConfig = useSensorConfig();
+
+    // Bangun parameter radar secara dinamis berdasarkan sensorConfig
+    const dynamicParameters = useMemo(() => {
+        if (!sensorConfig) return [];
+        return [
+            {
+                id: 1,
+                parameter: "Cahaya",
+                subjudul: "Digital",
+                getValue: (s) => s.lux,
+                min: sensorConfig.lux.min,
+                max: sensorConfig.lux.max,
+                satuan: sensorConfig.lux.unit,
+            },
+            {
+                id: 2,
+                parameter: "Suhu Udara",
+                subjudul: "Digital",
+                getValue: (s) => s.temp2,
+                min: sensorConfig.temp2.min,
+                max: sensorConfig.temp2.max,
+                satuan: sensorConfig.temp2.unit,
+            },
+            {
+                id: 3,
+                parameter: "Kelembapan Udara",
+                subjudul: "DHT22",
+                getValue: (s) => s.air_hum,
+                min: sensorConfig.air_hum.min,
+                max: sensorConfig.air_hum.max,
+                satuan: sensorConfig.air_hum.unit,
+            },
+            {
+                id: 4,
+                parameter: "Kelembaban Tanah",
+                subjudul: "Soil Capacitive",
+                getValue: (s) => s.soil_moisture1,
+                min: sensorConfig.soil_moisture1.min,
+                max: sensorConfig.soil_moisture1.max,
+                satuan: sensorConfig.soil_moisture1.unit,
+            },
+            {
+                id: 5,
+                parameter: "Suhu Tanah",
+                subjudul: "Digital",
+                getValue: (s) => s.temp1,
+                min: sensorConfig.temp1.min,
+                max: sensorConfig.temp1.max,
+                satuan: sensorConfig.temp1.unit,
+            }
+        ];
+    }, [sensorConfig]);
+
     useEffect(() => {
         if (sensor) setLastSensor(sensor);
     }, [sensor]);
 
-    const dataPoint = useMemo(() => buildRadarData(lastSensor), [lastSensor]);
+    const dataPoint = useMemo(() => buildRadarData(lastSensor, dynamicParameters), [lastSensor, dynamicParameters]);
     const hasSensor = Boolean(lastSensor);
     const radarVisible = liveEnabled && hasSensor;
     const windowWidth = useWindowWidth();

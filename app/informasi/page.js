@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useSensorLogsApi, useRelayLogsApi } from "../hook/useApiDevice";
+import LoadingScreen from "../component/LoadingScreen";
 import { FaClock, FaCheck, FaPowerOff } from "react-icons/fa6";
 import { TbWaveSawTool } from "react-icons/tb";
 
@@ -80,11 +81,11 @@ export default function InformasiPage() {
     if (!authLoading && !user) router.replace("/login");
   }, [user, authLoading, router]);
 
-  if (authLoading) return <div className="p-10 text-slate-400 italic">Memeriksa akun...</div>;
+  if (authLoading || (logsLoading && allLogs.length === 0)) return <LoadingScreen />;
   if (!user) return null;
 
   return (
-    <div className="p-6 text-slate-800 min-h-screen pb-20">
+    <div className="p-6 text-slate-700 min-h-screen pb-20">
 
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-700">Log Aktivitas Sistem</h1>
