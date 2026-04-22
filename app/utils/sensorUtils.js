@@ -82,7 +82,7 @@ export const SENSOR_CONFIG = {
     sub: "Gravity V1",
     unit: " ppm",
     min: 100,
-    max: 1000,
+    max: 700,
     maxLimit: 1000,
     color: "#ef4444",
     icon: FaFlask

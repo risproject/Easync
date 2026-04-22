@@ -150,6 +150,15 @@ export default function Grafik() {
             },
             {
                 id: 4,
+                parameter: "TDS",
+                subjudul: "TDS",
+                getValue: (s) => s.tds,
+                min: sensorConfig.tds.min,
+                max: sensorConfig.tds.max,
+                satuan: sensorConfig.tds.unit,
+            },
+            {
+                id: 5,
                 parameter: "Kelembaban Tanah",
                 subjudul: "Soil Capacitive",
                 getValue: (s) => s.soil_moisture1,
@@ -158,7 +167,7 @@ export default function Grafik() {
                 satuan: sensorConfig.soil_moisture1.unit,
             },
             {
-                id: 5,
+                id: 6,
                 parameter: "Suhu Tanah",
                 subjudul: "Digital",
                 getValue: (s) => s.temp1,
