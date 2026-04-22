@@ -148,7 +148,7 @@ export default function StatistikPage() {
 
   // bagian utama
   return (
-    <div className="p-4 md:p-6 text-slate-800 min-h-screen">
+    <div className="p-6 text-slate-800 min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 my-3">
         <div className="">
           <button onClick={() => setIsFilterOpen(true)} className="flex items-center gap-2 px-3 py-1.5 bg-linear-to-r from-teal-500 to-teal-600 text-white cursor-pointer text-sm rounded-lg shadow-sm">
@@ -159,12 +159,12 @@ export default function StatistikPage() {
       </div>
 
       {/* --- KOLOM LAYOUT --- */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
         {/* panel grafik */}
-        <div className="xl:col-span-2 flex flex-col gap-8">
+        <div className="xl:col-span-2 flex flex-col">
           <div className="bg-white shadow-md rounded-xl border border-slate-300 overflow-hidden">
-            <div className="py-5 px-6 flex flex-col justify-center">
+            <div className="p-4 flex flex-col justify-center">
               <h2 className="text-slate-700 font-bold text-xl">Grafik Historis</h2>
               <p className="text-slate-500 text-sm mb-3">
                 {selectedHours
@@ -189,7 +189,7 @@ export default function StatistikPage() {
               )}
             </div>
 
-            <div className="p-4 md:p-6">
+            <div className="p-4">
               {isFilterOpen && (
                 <div className="fixed inset-0 z-70 flex items-center justify-center p-4">
                   {/* Latar Belakang Gelap (Klik untuk tutup) */}
@@ -306,7 +306,7 @@ export default function StatistikPage() {
         {/* RINGKASAN */}
         <div className="xl:col-span-1">
           <div className="bg-linear-to-r from-teal-500 to-teal-600 text-white rounded-xl shadow-sm border border-slate-300 overflow-hidden sticky top-20">
-            <div className="h-20 relative px-6 flex flex-col justify-center">
+            <div className="h-20 relative px-4 flex flex-col justify-center">
               <FaSeedling className="text-white opacity-20 absolute top-1/2 -translate-y-1/2 right-4" size={60} />
               <h2 className="text-white font-bold text-xl relative z-10">Ringkasan</h2>
               <p className="text-white/70 text-sm relative z-10">
@@ -316,7 +316,7 @@ export default function StatistikPage() {
               </p>
             </div>
 
-            <div className="space-y-3 px-3 py-4">
+            <div className="space-y-3 p-2">
               {(!sensorStats || Object.keys(sensorStats).length === 0 || !sensorConfig) ? (
                 <div className="text-slate-500 text-md text-center py-4 italic">Belum ada data statistik</div>
               ) : (

@@ -142,7 +142,7 @@ export default function ControlPanel() {
     const relayCtrlDisabled = anyRelayLoading || (!!busyKey && busyKey !== "relay_enable");
 
     return (
-        <div className="bg-white shadow-lg rounded-xl p-6 border border-black/10">
+        <div className="bg-white shadow-lg rounded-xl p-4 border border-black/10">
 
             {/* Header */}
             <div className="flex items-center justify-center relative mb-4">

@@ -48,13 +48,13 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+        <div className="min-h-screen bg-white flex items-center justify-center px-6">
             <div className="w-full max-w-sm">
 
                 <div className="mb-6 text-center text-teal-600 flex flex-col items-center">
                     <FaSeedling size={32} className="mb-2" />
                     <h1 className="text-lg font-semibold text-slate-700">Easync</h1>
-                    <p className="text-sm text-slate-500 mt-1">Sign-in untuk masuk ke Easync</p>
+                    <p className="text-sm text-slate-500 mt-1">Login untuk masuk ke Easync</p>
                 </div>
 
                 <div className="md:rounded-2xl md:bg-white md:shadow-lg md:p-6">
@@ -92,7 +92,7 @@ export default function LoginPage() {
 
                         {/* Tombol submit */}
                         <button type="submit" disabled={loading} className="w-full cursor-pointer rounded-lg bg-linear-to-r from-teal-500 to-teal-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                            {loading ? "Signing in..." : "Sign in"}
+                            {loading ? "Processing..." : "Log in"}
                         </button>
 
                     </form>

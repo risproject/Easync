@@ -44,7 +44,7 @@ export default function InformasiPage() {
           type: "sensor",
           title: "Data Sensor Dikirim",
           icon: <TbWaveSawTool size={20} />,
-          colorClass: "bg-sky-100 text-sky-700",
+          colorClass: "bg-sky-200 text-sky-700",
         });
       });
     }
@@ -63,8 +63,8 @@ export default function InformasiPage() {
               title: `${relayNames[key]} telah di ${isOn ? "NYALAKAN" : "MATIKAN"}`,
               icon: isOn ? <FaCheck size={18} /> : <FaPowerOff size={18} />,
               colorClass: isOn
-                ? "bg-emerald-100 text-emerald-700"
-                : "bg-red-500/10 text-red-700",
+                ? "bg-emerald-200 text-emerald-700"
+                : "bg-red-200 text-red-700",
               statusType: isOn ? "ON" : "OFF"
             });
           }
@@ -113,9 +113,9 @@ export default function InformasiPage() {
           allLogs.map((log, idx) => (
             <div
               key={idx}
-              className="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-start gap-5"
+              className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm flex items-start gap-4"
             >
-              <div className={`mt-1 p-2.5 rounded-2xl shrink-0 ${log.colorClass}`}>
+              <div className={`mt-1 p-2 rounded-xl shrink-0 ${log.colorClass}`}>
                 {log.icon}
               </div>
 
@@ -124,14 +124,14 @@ export default function InformasiPage() {
                   <p className="font-semibold text-slate-700 text-md">
                     {log.title}
                   </p>
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full uppercase tracking-widest ${log.type === "sensor" ? "bg-slate-100 text-slate-500" :
+                  <span className={`text-xs font-medium px-2 py-1 rounded-lg uppercase ${log.type === "sensor" ? "bg-slate-100 text-slate-500" :
                     log.statusType === "ON" ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"
                     }`}>
                     {log.type === "sensor" ? "Laporan" : log.statusType}
                   </span>
                 </div>
 
-                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-3 text-sm text-slate-400">
+                <div className="flex flex-col md:flex-row md:items-center gap-2 text-sm text-slate-400">
                   <div className="flex items-center gap-1.5 font-medium">
                     <FaClock size={12} className="text-slate-300" />
                     <span>{formatFullTs(log.ts)} WIB</span>
