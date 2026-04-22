@@ -158,7 +158,7 @@ export default function SetelanPage() {
         <div className="grid gap-4 md:grid-cols-2">
           {/* Kolom Kiri: Info & Fusion */}
           <div className="space-y-4">
-            <div className="p-4 rounded-xl border border-slate-300 bg-white">
+            <div className="p-6 rounded-xl border border-slate-300 bg-white">
               <p className="text-sm text-slate-500">Akun : </p>
               <p className="text-slate-700 font-medium mb-3">{user.email}</p>
               <p className="text-sm text-slate-500">Nomor Seri IoT : </p>
@@ -169,13 +169,13 @@ export default function SetelanPage() {
               </button>
             </div>
 
-            <div className="p-4 rounded-xl border border-slate-300 bg-white">
+            <div className="p-6 rounded-xl border border-slate-300 bg-white">
               <div className="items-center justify-between flex">
                 <h3 className="font-bold text-slate-700">Soil Fusion</h3>
                 <select
                   value={formData.soil_fusion ? "true" : "false"}
                   onChange={handleSoilFusionSelect}
-                  className="px-3 py-1 my-3 bg-white border border-slate-300 rounded-lg text-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-teal-600 transition-all cursor-pointer">
+                  className="px-3 py-1 mb-3 bg-white border border-slate-300 rounded-lg text-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-teal-600 transition-all cursor-pointer">
                   <option value="false">Fusion OFF</option>
                   <option value="true">Fusion ON</option>
                 </select>
@@ -184,7 +184,7 @@ export default function SetelanPage() {
             </div>
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-300">
+          <div className="p-6 rounded-xl border border-slate-300">
             <h3 className="font-bold text-slate-700 flex items-center gap-2 border-b border-slate-300 pb-2 mb-6">
               kelembapan Tanah Otomatis
             </h3>

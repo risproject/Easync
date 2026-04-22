@@ -259,7 +259,7 @@ export default function StatistikPage() {
               )}
 
               {/* Area Grafik */}
-              <div style={{ height: '400px' }} className="w-full mt-6">
+              <div style={{ height: '350px' }} className="w-full mt-6">
                 {logsLoading ? (
                   <div className="flex items-center justify-center h-full text-slate-500">Memuat data...</div>
                 ) : chartData.length === 0 ? (
@@ -316,7 +316,7 @@ export default function StatistikPage() {
               </p>
             </div>
 
-            <div className="space-y-3 p-2">
+            <div className="space-y-3 p-4">
               {(!sensorStats || Object.keys(sensorStats).length === 0 || !sensorConfig) ? (
                 <div className="text-slate-500 text-md text-center py-4 italic">Belum ada data statistik</div>
               ) : (
