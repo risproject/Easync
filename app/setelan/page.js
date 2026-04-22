@@ -186,7 +186,7 @@ export default function SetelanPage() {
 
           <div className="p-6 rounded-xl border border-slate-300">
             <h3 className="font-bold text-slate-700 flex items-center gap-2 border-b border-slate-300 pb-2 mb-6">
-              kelembapan Tanah Otomatis
+              Target kelembapan Tanah
             </h3>
 
             <div className="mb-10">
