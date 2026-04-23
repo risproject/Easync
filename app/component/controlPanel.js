@@ -192,9 +192,10 @@ export default function ControlPanel() {
                     <div className="md:ml-6 w-full md:w-56">
                         <label className="block text-xs font-semibold text-slate-600 mb-2">Mode</label>
                         <div className="relative">
-                            <select value={mode} onChange={handleModeChange} disabled={!!busyKey || anyRelayLoading} className={`w-full appearance-none rounded-md px-4 py-2 text-sm font-medium shadow-inner transition-colors duration-300 ${(busyKey || anyRelayLoading) ? "bg-slate-100 text-slate-400 cursor-not-allowed opacity-50" : "bg-slate-100 text-slate-700"}`} >
+                            <select value={mode} onChange={handleModeChange} disabled={!!busyKey || anyRelayLoading} className={`w-full appearance-none rounded-md px-4 py-2 text-sm font-medium shadow-inner transition-colors duration-300 ${(busyKey || anyRelayLoading) ? "bg-slate-100 text-slate-400 cursor-not-allowed opacity-50" : "bg-slate-100 text-slate-700 cursor-pointer"}`} >
                                 <option value="manual">Manual</option>
                                 <option value="auto">Automatic</option>
+                                <option value="smart">Smart ANFIS</option>
                             </select>
                             <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">▾</span>
                         </div>
