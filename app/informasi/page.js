@@ -23,6 +23,22 @@ const formatFullTs = (ts) => {
   return `${day}-${month}-${year} ${hours}:${mins}:${secs}`;
 };
 
+const getSourceStyles = (src) => {
+  switch (src) {
+    case 0:
+    case "manual":
+      return { label: "Manual", color: "bg-slate-100 text-slate-600" };
+    case 1:
+    case "auto":
+      return { label: "Auto", color: "bg-emerald-50 text-emerald-600" };
+    case 2:
+    case "smart_api":
+      return { label: "Smart", color: "bg-purple-50 text-purple-600" };
+    default:
+      return { label: "System", color: "bg-slate-100 text-slate-600" };
+  }
+};
+
 export default function InformasiPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -65,7 +81,8 @@ export default function InformasiPage() {
               colorClass: isOn
                 ? "bg-emerald-200 text-emerald-700"
                 : "bg-red-200 text-red-700",
-              statusType: isOn ? "ON" : "OFF"
+              statusType: isOn ? "ON" : "OFF",
+              src: log.trigger_source // Menggunakan trigger_source sesuai kolom DB
             });
           }
         });
@@ -124,10 +141,11 @@ export default function InformasiPage() {
                   <p className="font-semibold text-slate-700 text-md">
                     {log.title}
                   </p>
-                  <span className={`text-xs font-medium px-2 py-1 rounded-lg uppercase ${log.type === "sensor" ? "bg-slate-100 text-slate-500" :
-                    log.statusType === "ON" ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"
+                  <span className={`text-xs font-medium px-2 py-1 rounded-lg uppercase ${log.type === "sensor"
+                    ? "bg-slate-100 text-slate-600"
+                    : getSourceStyles(log.src).color
                     }`}>
-                    {log.type === "sensor" ? "Laporan" : log.statusType}
+                    {log.type === "sensor" ? "Laporan" : getSourceStyles(log.src).label}
                   </span>
                 </div>
 
@@ -138,7 +156,7 @@ export default function InformasiPage() {
                   </div>
                   <span className="hidden md:block text-slate-200">|</span>
                   <div className="flex">
-                    <span className="font-mono bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-100 text-slate-500">
+                    <span className="font-mono bg-slate-100 px-2 py-0.5 rounded-lg text-slate-600">
                       {deviceId}
                     </span>
                   </div>
