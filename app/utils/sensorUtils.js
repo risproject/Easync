@@ -8,7 +8,7 @@ import { RiSunLine } from "react-icons/ri";
 // Konfigurasi Central untuk seluruh sensor
 export const SENSOR_CONFIG = {
   soil_moisture1: {
-    label: "Kelembaban Tanah 1",
+    label: "Kelembapan Tanah 1",
     sub: "Soil Moisture Sensor",
     unit: "%",
     min: 52,
@@ -18,7 +18,7 @@ export const SENSOR_CONFIG = {
     icon: FaDroplet
   },
   soil_moisture2: {
-    label: "Kelembaban Tanah 2",
+    label: "Kelembapan Tanah 2",
     sub: "Soil Moisture Sensor",
     unit: "%",
     min: 52,
@@ -38,7 +38,7 @@ export const SENSOR_CONFIG = {
     icon: FaTemperatureHalf
   },
   air_hum: {
-    label: "Kelembaban Udara",
+    label: "Kelembapan Udara",
     sub: "AHT10",
     unit: "%",
     min: 50,

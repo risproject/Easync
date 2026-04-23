@@ -159,7 +159,7 @@ export default function Grafik() {
             },
             {
                 id: 5,
-                parameter: "Kelembaban Tanah",
+                parameter: "Kelembapan Tanah",
                 subjudul: "Soil Capacitive",
                 getValue: (s) => s.soil_moisture1,
                 min: sensorConfig.soil_moisture1.min,
