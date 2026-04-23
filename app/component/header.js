@@ -7,7 +7,7 @@ export default function Header({ onPowerToggle }) {
     const deviceId = process.env.NEXT_PUBLIC_DEVICE_ID || "device-001";
 
     // hooks for status
-    const { automation } = useAutomationApi(deviceId, { pollMs: 60000 }); // moderate polling
+    const { automation } = useAutomationApi(deviceId, { pollMs: 10000 });
     // limit 1 is enough for checking latest timestamp for online status
     const { logs: sensorLogs } = useSensorLogsApi(deviceId, { limit: 1 });
 
@@ -19,11 +19,13 @@ export default function Header({ onPowerToggle }) {
         const latestLogTs = sensorLogs?.[0]?.sensor_ts;
         if (latestLogTs) {
             const diffMin = (new Date().getTime() - new Date(latestLogTs).getTime()) / (1000 * 60);
-            setIsOnline(diffMin < 6 && diffMin >= -1);
+            const threshold = automation?.inspect_interval * 1.5;
+
+            setIsOnline(diffMin < threshold && diffMin >= -1);
         } else {
             setIsOnline(false);
         }
-    }, [sensorLogs]);
+    }, [sensorLogs, automation]);
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-slate-200">
