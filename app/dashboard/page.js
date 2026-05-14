@@ -69,7 +69,7 @@ export default function DashboardPage() {
             {/* Modal Peringatan Kelembapan */}
             {showWarning && warningData && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowWarning(false)} />
+                    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" />
                     <div className="bg-white rounded-xl shadow-2xl w-full max-w-[320px] p-8 relative flex flex-col items-center text-center animate-in fade-in zoom-in duration-300 z-10">
                         <button type="button" onClick={() => setShowWarning(false)} className="absolute top-4 right-4 text-white bg-red-500 hover:bg-red-600 cursor-pointer p-1.5 rounded-lg transition-colors shadow-sm">
                             <FaXmark size={16} />
@@ -91,7 +91,7 @@ export default function DashboardPage() {
                         <button
                             type="button"
                             onClick={() => setShowWarning(false)}
-                            className={`w-full py-1.5 ${warningData.btnClass} text-white font-medium rounded-lg transition-all cursor-pointer shadow-lg active:scale-95`}>
+                            className={`w-full py-1.5 gap-2 px-4 ${warningData.btnClass} text-white font-medium rounded-lg transition-all cursor-pointer shadow-lg active:scale-95`}>
                             Tutup
                         </button>
                     </div>
