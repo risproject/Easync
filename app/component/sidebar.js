@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { RiHome3Fill, RiBarChartFill, RiAlertFill, RiSettings3Fill, } from "react-icons/ri";
 import { DiJqueryLogo } from "react-icons/di";
 import { VscListSelection } from "react-icons/vsc";
-import { PiCircuitryFill } from "react-icons/pi";
+import { PiCircuitryFill, PiPlantFill } from "react-icons/pi";
 import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
@@ -49,6 +49,7 @@ export default function Sidebar() {
                 {/* Menu Items */}
                 <nav className="flex flex-col flex-1 px-2 space-y-1">
                     <MenuItem icon={<RiHome3Fill size={20} />} label="Beranda" href="/" expanded={expanded} onClick={closeSidebar} />
+                    <MenuItem icon={<PiPlantFill size={20} />} label="Tanamanku" href="/tanamanku" expanded={expanded} onClick={closeSidebar} />
                     <MenuItem icon={<RiBarChartFill size={20} />} label="Statistik" href="/statistik" expanded={expanded} onClick={closeSidebar} />
                     <MenuItem icon={<RiAlertFill size={20} />} label="Informasi" href="/informasi" expanded={expanded} onClick={closeSidebar} />
                     <MenuItem icon={<PiCircuitryFill size={20} />} label="Sensor" href="/sensor" expanded={expanded} onClick={closeSidebar} />

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "next/navigation";
 import { useAutomationApi } from "../hook/useApiDevice";
-import { FiLogOut, FiCheckCircle, FiXCircle } from "react-icons/fi";
+import { FiLogOut, FiCheckCircle, FiXCircle, FiCheck } from "react-icons/fi";
 import { formatTimestamp } from "../utils/sensorUtils";
 import LoadingScreen from "../component/LoadingScreen";
 
@@ -28,6 +28,51 @@ export default function SetelanPage() {
 
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
+
+  // Plant state
+  const [plantForm, setPlantForm] = useState({ nama: "", tanggalTanam: "", batasVegetatif: 30 });
+  const [savingPlant, setSavingPlant] = useState(false);
+
+  const fetchPlant = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/plants?device_id=${deviceId}`);
+      const json = await res.json();
+      if (json.data) {
+        setPlantForm({
+          nama: json.data.nama || "",
+          tanggalTanam: json.data.tanggal_tanam || "",
+          batasVegetatif: json.data.batas_vegetatif ?? 30,
+        });
+      }
+    } catch (err) {
+      console.error("Fetch plant gagal:", err);
+    }
+  }, [deviceId]);
+
+  useEffect(() => { fetchPlant(); }, [fetchPlant]);
+
+  const handleSavePlant = async () => {
+    if (!plantForm.nama || !plantForm.tanggalTanam) return;
+    setSavingPlant(true);
+    try {
+      await fetch("/api/plants", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          device_id: deviceId,
+          nama: plantForm.nama,
+          tanggal_tanam: plantForm.tanggalTanam,
+          batas_vegetatif: plantForm.batasVegetatif,
+        }),
+      });
+      setSaveStatus("success");
+    } catch (err) {
+      console.error("Save plant gagal:", err);
+      setSaveStatus("error");
+    } finally {
+      setSavingPlant(false);
+    }
+  };
 
   // Sync animation data to local state
   useEffect(() => {
@@ -158,7 +203,7 @@ export default function SetelanPage() {
         <div className="grid gap-4 md:grid-cols-2">
           {/* Kolom Kiri: Info & Fusion */}
           <div className="space-y-4">
-            <div className="p-6 rounded-xl border border-slate-300 bg-white">
+            <div className="p-6 rounded-xl border border-slate-300 bg-white overflow-hidden">
               <p className="text-sm text-slate-500">Akun : </p>
               <p className="text-slate-700 font-medium mb-3">{user.email}</p>
               <p className="text-sm text-slate-500">Nomor Seri IoT : </p>
@@ -169,7 +214,7 @@ export default function SetelanPage() {
               </button>
             </div>
 
-            <div className="p-6 rounded-xl border border-slate-300 bg-white">
+            <div className="p-6 rounded-xl border border-slate-300 bg-white overflow-hidden">
               <div className="items-center justify-between flex">
                 <h3 className="font-bold text-slate-700">Soil Fusion</h3>
                 <select
@@ -180,106 +225,165 @@ export default function SetelanPage() {
                   <option value="true">Fusion ON</option>
                 </select>
               </div>
-              <p className="text-sm text-slate-500">Gabungkan Pembacaan 2 Sensor Kelembapan Tanah Sekaligus</p>
+              <p className="text-sm text-slate-500 my-3">Gabungkan Pembacaan 2 Sensor Kelembapan Tanah Sekaligus</p>
+            </div>
+
+            <div className="p-6 rounded-xl border border-slate-300 bg-white overflow-hidden">
+              <h3 className="font-bold text-slate-700 bg-slate-100 text-center py-3 -mx-6 -mt-6 mb-6 border-b border-slate-200">Informasi Tanaman</h3>
+              <div className="space-y-5">
+                <div>
+                  <label className="text-sm font-bold text-slate-700 block mb-2">Nama Tanaman</label>
+                  <input type="text" value={plantForm.nama} onChange={e => setPlantForm(prev => ({ ...prev, nama: e.target.value }))} placeholder="Contoh: Cabai Rawit, Tomat, dll." className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-slate-700" />
+                </div>
+                <div>
+                  <label className="text-sm font-bold text-slate-700 block mb-2">Tanggal Mulai Tanam</label>
+                  <input type="date" value={plantForm.tanggalTanam} onChange={e => setPlantForm(prev => ({ ...prev, tanggalTanam: e.target.value }))} className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-slate-700" />
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-bold text-slate-700">Batas Fase Vegetatif</label>
+                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-sm font-bold rounded-lg border border-emerald-200">{plantForm.batasVegetatif} Hari</span>
+                  </div>
+                  <input type="range" min="1" max="120" value={plantForm.batasVegetatif} onChange={e => setPlantForm(prev => ({ ...prev, batasVegetatif: Number(e.target.value) }))} className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-500 mb-4" />
+                  <div className="flex justify-between text-sm text-slate-500 font-medium px-1">
+                    <span>1</span>
+                    <span>30</span>
+                    <span>60</span>
+                    <span>90</span>
+                    <span>120</span>
+                  </div>
+                  <p className="text-sm text-slate-500 my-3">Durasi fase vegetatif dalam hari.</p>
+                </div>
+              </div>
+              <button type="button" onClick={handleSavePlant} disabled={!plantForm.nama || !plantForm.tanggalTanam || savingPlant}
+                className={`w-full flex items-center justify-center gap-2 px-4 py-1.5 mt-6 rounded-lg text-sm font-semibold transition-all ${!plantForm.nama || !plantForm.tanggalTanam || savingPlant ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-linear-to-r from-teal-500 to-teal-600 text-white shadow-sm cursor-pointer"}`}>
+                {savingPlant ? <span className="h-4 w-4 border-2 border-slate-300 border-t-slate-500 animate-spin rounded-full" /> : <FiCheck size={16} />}
+                {savingPlant ? "Menyimpan..." : "Simpan"}
+              </button>
             </div>
           </div>
 
-          <div className="p-6 rounded-xl border border-slate-300">
-            <h3 className="font-bold text-slate-700 flex items-center gap-2 border-b border-slate-300 pb-2 mb-6">
-              Target kelembapan Tanah
-            </h3>
+          <div className="space-y-4">
+            <div className="p-6 rounded-xl border border-slate-300 bg-white overflow-hidden">
+              <h3 className="font-bold text-slate-700 bg-slate-100 text-center py-3 -mx-6 -mt-6 mb-6 border-b border-slate-200">
+                Target Kelembapan Tanah
+              </h3>
 
-            <div className="mb-10">
-              {/* Slider Minimum */}
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-slate-700 font-bold">Minimum</span>
-                <span className="text-md font-bold text-teal-700 bg-teal-100 px-2 py-0.5 rounded border border-teal-100">{formData.soil_min}%</span>
-              </div>
-              <input type="range" name="soil_min" min="0" max="100" value={formData.soil_min} onChange={handleChange} className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600 mb-4" />
-              <div className="flex justify-between text-sm text-slate-500 font-medium px-1">
-                <span>0%</span>
-                <span>20%</span>
-                <span>40%</span>
-                <span>60%</span>
-                <span>80%</span>
-                <span>100%</span>
+              <div className="mb-10">
+                {/* Slider Minimum */}
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-slate-700 font-bold">Minimum</span>
+                  <span className="text-md font-bold text-teal-700 bg-teal-100 px-2 py-0.5 rounded border border-teal-100">{formData.soil_min}%</span>
+                </div>
+                <input type="range" name="soil_min" min="0" max="100" value={formData.soil_min} onChange={handleChange} className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600 mb-4" />
+                <div className="flex justify-between text-sm text-slate-500 font-medium px-1">
+                  <span>0%</span>
+                  <span>20%</span>
+                  <span>40%</span>
+                  <span>60%</span>
+                  <span>80%</span>
+                  <span>100%</span>
+                </div>
+                <p className="text-sm text-slate-500 my-3">Ambang batas kelembapan tanah terendah</p>
               </div>
 
-              {/* Slider Maximum */}
-              <div className="flex justify-between items-center mb-2 mt-10">
-                <span className="text-sm text-slate-700 font-bold">Maximum</span>
-                <span className="text-md font-bold text-teal-700 bg-teal-100 px-2 py-0.5 rounded border border-teal-100">{formData.soil_max}%</span>
+              <div className="mb-10">
+                {/* Slider Maximum */}
+                <div className="flex justify-between items-center mb-2 mt-10">
+                  <span className="text-sm text-slate-700 font-bold">Kelembapan maksimum</span>
+                  <span className="text-md font-bold text-teal-700 bg-teal-100 px-2 py-0.5 rounded border border-teal-100">{formData.soil_max}%</span>
+                </div>
+                <input type="range" name="soil_max" min="0" max="100" value={formData.soil_max} onChange={handleChange} className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600 mb-4" />
+                <div className="flex justify-between text-sm text-slate-500 font-medium px-1">
+                  <span>0%</span>
+                  <span>20%</span>
+                  <span>40%</span>
+                  <span>60%</span>
+                  <span>80%</span>
+                  <span>100%</span>
+                </div>
+                <p className="text-sm text-slate-500 my-3">Ambang batas kelembapan tanah tertinggi</p>
               </div>
-              <input type="range" name="soil_max" min="0" max="100" value={formData.soil_max} onChange={handleChange} className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600 mb-4" />
-              <div className="flex justify-between text-sm text-slate-500 font-medium px-1">
-                <span>0%</span>
-                <span>20%</span>
-                <span>40%</span>
-                <span>60%</span>
-                <span>80%</span>
-                <span>100%</span>
-              </div>
+
+              <button
+                type="submit" disabled={isSaving}
+                className={`w-full flex items-center justify-center gap-2 px-4 py-1.5 rounded-lg transition-all ${isSaving
+                  ? "bg-slate-100 text-slate-500 cursor-wait"
+                  : "bg-linear-to-r from-teal-500 to-teal-600 text-white shadow-sm border border-slate-300 cursor-pointer"
+                  }`}>
+                {isSaving && (
+                  <span className="h-4 w-4 border-2 border-slate-300 border-t-slate-500 animate-spin rounded-full" />
+                )}
+                {isSaving ? "Menerapkan..." : "Terapkan"}
+              </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-10">
-              <div>
-                <label className="text-sm font-bold text-slate-700 block mb-1">Mulai Tunda</label>
-                <input type="time" name="quiet_start" value={formData.quiet_start} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-600 outline-none transition-all" />
-              </div>
-              <div>
-                <label className="text-sm font-bold text-slate-700 block mb-1">Selesai Tunda</label>
-                <input type="time" name="quiet_end" value={formData.quiet_end} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-600 outline-none transition-all" />
-              </div>
-            </div>
+            <div className="p-6 rounded-xl border border-slate-300 bg-white overflow-hidden">
+              <h3 className="font-bold text-slate-700 bg-slate-100 text-center py-3 -mx-6 -mt-6 mb-6 border-b border-slate-200">
+                Otomatisasi
+              </h3>
 
-            <div className="mb-10">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-bold text-slate-700">Durasi Siram</label>
-                <span className="px-2 py-1 bg-teal-100 text-teal-700 text-md font-bold rounded-lg border border-teal-100">
-                  {formData.duration_sec} Detik
-                </span>
+              <div className="space-y-6 mb-10">
+                <div>
+                  <label className="text-sm font-bold text-slate-700 block mb-2">Mulai Tunda</label>
+                  <input type="time" name="quiet_start" value={formData.quiet_start} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-600 outline-none transition-all text-slate-700" />
+                  <p className="text-sm text-slate-500 my-3">Jam dimana penyiraman otomatis akan istirahat.</p>
+                </div>
+                <div>
+                  <label className="text-sm font-bold text-slate-700 block mb-2">Selesai Tunda</label>
+                  <input type="time" name="quiet_end" value={formData.quiet_end} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-600 outline-none transition-all text-slate-700" />
+                  <p className="text-sm text-slate-500 my-3">Jam dimana penyiraman otomatis akan aktif kembali.</p>
+                </div>
               </div>
-              <input type="range" name="duration_sec" min="10" max="60" value={formData.duration_sec} onChange={handleChange} className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600 mb-4" />
-              <div className="flex justify-between text-sm text-slate-500 font-medium px-1 mb-2">
-                <span>10s</span>
-                <span>20s</span>
-                <span>30s</span>
-                <span>40s</span>
-                <span>50s</span>
-                <span>60s</span>
-              </div>
-              <p className="text-sm text-slate-500 mb-4">Lama pompa menyala otomatis saat terpicu.</p>
-            </div>
 
-            <div className="mb-10">
-              <div className="flex items-center justify-between mb-3">
-                <label className="text-sm font-bold text-slate-700">Interval Pengecekan</label>
-                <span className="px-2 py-1 bg-teal-100 text-teal-700 text-md font-bold rounded-lg border border-teal-100">
-                  {formData.inspect_interval} Menit
-                </span>
+              <div className="mb-10">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-bold text-slate-700">Durasi Siram</label>
+                  <span className="px-2 py-1 bg-teal-100 text-teal-700 text-md font-bold rounded-lg border border-teal-100">
+                    {formData.duration_sec} Detik
+                  </span>
+                </div>
+                <input type="range" name="duration_sec" min="10" max="120" value={formData.duration_sec} onChange={handleChange} className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600 mb-4" />
+                <div className="flex justify-between text-sm text-slate-500 font-medium px-1 mb-2">
+                  <span>10s</span>
+                  <span>30s</span>
+                  <span>60s</span>
+                  <span>90s</span>
+                  <span>120s</span>
+                </div>
+                <p className="text-sm text-slate-500 my-3">Lama pompa menyala otomatis saat terpicu.</p>
               </div>
-              <input type="range" name="inspect_interval" min="1" max="20" value={formData.inspect_interval} onChange={handleChange} className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600 mb-4" />
-              <div className="flex justify-between text-sm text-slate-500 font-medium px-1 mb-2">
-                <span>1m</span>
-                <span>5m</span>
-                <span>10m</span>
-                <span>15m</span>
-                <span>20m</span>
-              </div>
-              <p className="text-sm text-slate-500 mb-4">Seberapa sering sistem mengecek data sensor.</p>
-            </div>
 
-            <button
-              type="submit" disabled={isSaving}
-              className={`w-full flex items-center justify-center gap-2 px-4 py-1.5 rounded-lg transition-all ${isSaving
-                ? "bg-slate-100 text-slate-500 cursor-wait"
-                : "bg-linear-to-r from-teal-500 to-teal-600 text-white shadow-sm border border-slate-300 cursor-pointer"
-                }`}>
-              {isSaving && (
-                <span className="h-4 w-4 border-2 border-slate-300 border-t-slate-500 animate-spin rounded-full" />
-              )}
-              {isSaving ? "Menerapkan..." : "Terapkan"}
-            </button>
+              <div className="mb-10">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-sm font-bold text-slate-700">Interval Pengecekan</label>
+                  <span className="px-2 py-1 bg-teal-100 text-teal-700 text-md font-bold rounded-lg border border-teal-100">
+                    {formData.inspect_interval} Menit
+                  </span>
+                </div>
+                <input type="range" name="inspect_interval" min="1" max="20" value={formData.inspect_interval} onChange={handleChange} className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600 mb-4" />
+                <div className="flex justify-between text-sm text-slate-500 font-medium px-1 mb-2">
+                  <span>1m</span>
+                  <span>5m</span>
+                  <span>10m</span>
+                  <span>15m</span>
+                  <span>20m</span>
+                </div>
+                <p className="text-sm text-slate-500 my-3">Seberapa sering sistem mengecek data sensor.</p>
+              </div>
+
+              <button
+                type="submit" disabled={isSaving}
+                className={`w-full flex items-center justify-center gap-2 px-4 py-1.5 rounded-lg transition-all ${isSaving
+                  ? "bg-slate-100 text-slate-500 cursor-wait"
+                  : "bg-linear-to-r from-teal-500 to-teal-600 text-white shadow-sm border border-slate-300 cursor-pointer"
+                  }`}>
+                {isSaving && (
+                  <span className="h-4 w-4 border-2 border-slate-300 border-t-slate-500 animate-spin rounded-full" />
+                )}
+                {isSaving ? "Menerapkan..." : "Terapkan"}
+              </button>
+            </div>
           </div>
         </div>
       </form>

@@ -41,7 +41,7 @@ export const SENSOR_CONFIG = {
     label: "Kelembapan Udara",
     sub: "AHT10",
     unit: "%",
-    min: 50,
+    min: 60,
     max: 80,
     maxLimit: 100,
     color: "#3b82f6",

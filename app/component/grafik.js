@@ -34,9 +34,9 @@ function useWindowWidth(initialWidth = 768) {
 }
 
 const legenda = [
-    { label: "Waspada", color: "#FD9A00" },
+    { label: "Rendah", color: "#FD9A00" },
     { label: "Optimal", color: "#00BBA8" },
-    { label: "Bahaya", color: "#FB2C36" },
+    { label: "Tinggi", color: "#FB2C36" },
 ];
 function StatusLegend() {
     return (
@@ -150,7 +150,7 @@ export default function Grafik() {
             },
             {
                 id: 4,
-                parameter: "TDS",
+                parameter: "Nutrisi (TDS)",
                 subjudul: "TDS",
                 getValue: (s) => s.tds,
                 min: sensorConfig.tds.min,
@@ -205,7 +205,7 @@ export default function Grafik() {
 
     return (
         <div className="bg-white shadow-md rounded-xl p-4 text-center border border-black/10">
-            <h2 className="text-md font-semibold mb-2">Live Data</h2>
+            <h2 className="text-md font-semibold mb-2">Data Terkini</h2>
             <div className="text-xs text-slate-500 mb-3">
                 Last sync:{" "}
                 {liveEnabled && sensor?.sensor_ts
