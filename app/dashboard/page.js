@@ -26,7 +26,7 @@ export default function DashboardPage() {
     }, [user, loading, router]);
 
     useEffect(() => {
-        if (!hasChecked && sensor && automation) {
+        if (!hasChecked && sensor && automation && automation.live_enable === true) {
             const isFusion = automation.soil_fusion === true || automation.soil_fusion === "true";
             const moisture = isFusion
                 ? (Number(sensor.soil_moisture1) + Number(sensor.soil_moisture2)) / 2
